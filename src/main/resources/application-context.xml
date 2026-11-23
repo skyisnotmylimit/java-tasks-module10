@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder
+            location="classpath:booking.properties,${booking.config:classpath:booking.properties}"/>
+    <context:annotation-config/>
+
+    <bean id="storageInitializer" class="com.epam.booking.storage.StorageInitializer">
+        <property name="dataFile" value="${booking.data.location}"/>
+    </bean>
+    <bean id="storage" class="com.epam.booking.storage.InMemoryStorage"/>
+
+    <bean id="userDao" class="com.epam.booking.dao.UserDao"/>
+    <bean id="eventDao" class="com.epam.booking.dao.EventDao"/>
+    <bean id="ticketDao" class="com.epam.booking.dao.TicketDao"/>
+
+    <bean id="userService" class="com.epam.booking.service.UserService"/>
+    <bean id="eventService" class="com.epam.booking.service.EventService"/>
+    <bean id="ticketService" class="com.epam.booking.service.TicketService"/>
+
+    <bean id="bookingFacade" class="com.epam.booking.facade.BookingFacadeImpl">
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="eventService"/>
+        <constructor-arg ref="ticketService"/>
+    </bean>
+</beans>
